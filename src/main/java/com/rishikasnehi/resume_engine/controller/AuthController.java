@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.rishikasnehi.resume_engine.dto.LoginRequest;
 import com.rishikasnehi.resume_engine.dto.RegisterRequest;
 import com.rishikasnehi.resume_engine.dto.RegisterResponse;
 import com.rishikasnehi.resume_engine.service.AuthService;
@@ -58,4 +59,11 @@ public class AuthController {
         Map<String, String> response = fileUploadService.uploadSingleImage(file);
         return ResponseEntity.ok(response);   
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+        RegisterResponse response = authService.login(request);
+        return ResponseEntity.ok(response);
+    }
+
 }

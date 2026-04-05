@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.rishikasnehi.resume_engine.dto.LoginRequest;
 import com.rishikasnehi.resume_engine.dto.RegisterRequest;
 import com.rishikasnehi.resume_engine.dto.RegisterResponse;
 import com.rishikasnehi.resume_engine.exception.ResourceExistsException;
@@ -112,4 +114,20 @@ public class AuthService {
                 .updatedAt(user.getUpdatedAt())
                 .build();
     }
+    
+    public RegisterResponse login(LoginRequest request) {
+        User existingUser = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(() -> new UsernameNotFoundException("User with email " + request.getEmail() + " not found"));
+
+        if(!passwordEncoder.matches(request.getPassword(), existingUser.getPassword())) {
+            // Generate JWT token or session (not implemented here)
+            throw new UsernameNotFoundException("Invalid Email or password");
+        }
+
+            String token = "jwtToken";
+            RegisterResponse response = buildRegisterResponse(existingUser);
+            response.setToken(token);
+            return response;
+    }
+
 }

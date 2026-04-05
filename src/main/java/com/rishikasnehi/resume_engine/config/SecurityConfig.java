@@ -35,7 +35,8 @@ public class SecurityConfig {
                 "/api/auth/register",
                 "/api/auth/login",
                 "/api/auth/verify-email",
-                "/api/auth/upload-image"
+                "/api/auth/upload-image",
+                "/actuator/health"
             ).permitAll()
             .anyRequest().authenticated()
         );
