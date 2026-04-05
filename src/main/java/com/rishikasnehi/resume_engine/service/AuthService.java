@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.rishikasnehi.resume_engine.dto.RegisterRequest;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthService {
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.base.url:http://localhost:8080}")
     private String appBaseUrl;
@@ -90,7 +92,7 @@ public class AuthService {
         return User.builder()
                 .name(request.getName())
                 .email(request.getEmail())
-                .password(request.getPassword()) // In production, hash the password before saving
+                .password(passwordEncoder.encode(request.getPassword())) // In production, hash the password before saving
                 .profileImageUrl(request.getProfileImageUrl())
                 .emailVerified(false) // Set to false by default, can be updated after email verification
                 .verificationToken(UUID.randomUUID().toString())
