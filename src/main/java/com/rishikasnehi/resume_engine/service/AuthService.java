@@ -14,6 +14,7 @@ import com.rishikasnehi.resume_engine.dto.RegisterResponse;
 import com.rishikasnehi.resume_engine.exception.ResourceExistsException;
 import com.rishikasnehi.resume_engine.model.User;
 import com.rishikasnehi.resume_engine.repository.UserRepository;
+import com.rishikasnehi.resume_engine.util.Jwtutil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final Jwtutil jwtutil;
 
     @Value("${app.base.url:http://localhost:8080}")
     private String appBaseUrl;
@@ -124,7 +126,11 @@ public class AuthService {
             throw new UsernameNotFoundException("Invalid Email or password");
         }
 
-            String token = "jwtToken";
+        if(!existingUser.isEmailVerified()) {
+            throw new RuntimeException("Email is not verified");
+        }
+
+            String token = jwtutil.generateToken(existingUser.getId());
             RegisterResponse response = buildRegisterResponse(existingUser);
             response.setToken(token);
             return response;
