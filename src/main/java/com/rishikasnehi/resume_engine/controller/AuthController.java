@@ -18,6 +18,10 @@ import static com.rishikasnehi.resume_engine.util.AppConstants.AUTH_BASE_URL;
 import static com.rishikasnehi.resume_engine.util.AppConstants.REGISTER_URL;
 import static com.rishikasnehi.resume_engine.util.AppConstants.VERIFY_EMAIL_URL;
 import static com.rishikasnehi.resume_engine.util.AppConstants.UPLOAD_PROFILE;
+import static com.rishikasnehi.resume_engine.util.AppConstants.LOGIN;
+import static com.rishikasnehi.resume_engine.util.AppConstants.RESEND_VERIFICATION;
+
+
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +32,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.util.Objects; // 
 
 
 @RestController
@@ -61,15 +65,29 @@ public class AuthController {
         return ResponseEntity.ok(response);   
     }
 
-    @PostMapping("/login")
+    @PostMapping(LOGIN)
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         RegisterResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
 
+    // Remove at end...not necccessary, just to test token validation
     @GetMapping("/validate")
     public String testValidationToken() {
         return "Token is valid!"; 
+    }
+
+    @PostMapping(RESEND_VERIFICATION)
+    public ResponseEntity<?> resendVerification(@RequestBody Map<String, String> body) { 
+        String email = body.get("email");
+
+        if(Objects.isNull(email)) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email is required"));
+        }
+
+        authService.resendVerificationEmail(email);
+        return ResponseEntity.ok(Map.of("success", "true", "message", "Verification email resent successfully"));
+
     }
 
 }

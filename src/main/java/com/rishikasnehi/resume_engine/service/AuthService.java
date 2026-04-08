@@ -136,4 +136,27 @@ public class AuthService {
             return response;
     }
 
+    public void resendVerificationEmail(String email) {
+
+        // Step 1: Find user by email
+        // Step 2: Check if user exists and email is  already verified
+        // Step 3: Generate new token and update expiry
+        // Step 4: Update user in the database
+        // Step 5: Resend verification email
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User with email " + email + " not found"));
+
+        if (user.isEmailVerified()) {
+            throw new RuntimeException("Email is already verified");
+        }
+
+        // Generate new token and update expiry
+        user.setVerificationToken(UUID.randomUUID().toString());
+        user.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+        userRepository.save(user);
+
+        // Send verification email
+        sendVerificationEmail(user);
+    }
+
 }
