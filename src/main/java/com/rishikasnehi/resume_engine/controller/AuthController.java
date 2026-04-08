@@ -3,9 +3,9 @@ package com.rishikasnehi.resume_engine.controller;
 import java.io.IOException;
 import java.util.Map;
 
+import org.springframework.security.core.Authentication; 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.rishikasnehi.resume_engine.dto.LoginRequest;
@@ -20,6 +20,8 @@ import static com.rishikasnehi.resume_engine.util.AppConstants.VERIFY_EMAIL_URL;
 import static com.rishikasnehi.resume_engine.util.AppConstants.UPLOAD_PROFILE;
 import static com.rishikasnehi.resume_engine.util.AppConstants.LOGIN;
 import static com.rishikasnehi.resume_engine.util.AppConstants.RESEND_VERIFICATION;
+import static com.rishikasnehi.resume_engine.util.AppConstants.PROFILE;
+
 
 
 
@@ -88,6 +90,17 @@ public class AuthController {
         authService.resendVerificationEmail(email);
         return ResponseEntity.ok(Map.of("success", "true", "message", "Verification email resent successfully"));
 
+    }
+
+    @GetMapping(PROFILE)
+    public ResponseEntity<?> getProfile(Authentication authentication) {
+        //Step 1: get the principal object
+        //Step 2: call the service method to get the profile details
+        //Step 3: return the profile details in the response
+
+        Object principalObject = authentication.getPrincipal();
+        RegisterResponse response = authService.getProfile(principalObject);
+        return ResponseEntity.ok(response);
     }
 
 }

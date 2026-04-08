@@ -159,4 +159,9 @@ public class AuthService {
         sendVerificationEmail(user);
     }
 
+    public RegisterResponse getProfile(Object principalObject) {
+        User existingUser = (User) principalObject;
+        return buildRegisterResponse(existingUser);
+    }
+
 }
