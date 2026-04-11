@@ -1,6 +1,6 @@
 package com.rishikasnehi.resume_engine.service;
 
-import static com.rishikasnehi.resume_engine.util.AppConstants.premium;
+import static com.rishikasnehi.resume_engine.util.AppConstants.PREMIUM;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +27,7 @@ public class TemplateService {
 
         // Step 2 : Get the available templates based on the subsription plan for the user
         List<String> availableTemplates;
-        boolean isPremiumUser = response.getSubscriptionPlan().equalsIgnoreCase(premium);
+        boolean isPremiumUser = response.getSubscriptionPlan().equalsIgnoreCase(PREMIUM);
         if(isPremiumUser) {
             availableTemplates = List.of("01", "02", "03");
         } else {
