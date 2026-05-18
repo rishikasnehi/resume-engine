@@ -18,7 +18,10 @@ import com.rishikasnehi.resume_engine.dto.CreateResumeRequest;
 import com.rishikasnehi.resume_engine.model.Resume;
 import com.rishikasnehi.resume_engine.service.FileUploadService;
 import com.rishikasnehi.resume_engine.service.ResumeService;
+import com.rishikasnehi.resume_engine.service.PdfService;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 import static com.rishikasnehi.resume_engine.util.AppConstants.ID;
 import static com.rishikasnehi.resume_engine.util.AppConstants.RESUME;
 import static com.rishikasnehi.resume_engine.util.AppConstants.UPLOAD_IMAGES;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +43,7 @@ public class ResumeController {
 
     private final ResumeService resumeService;
     private final FileUploadService fileUploadService;
+    private final PdfService pdfService;
 
     // Create a new resume for the user
     @PostMapping
@@ -105,5 +110,22 @@ public class ResumeController {
             // Step 2 : Return the response
             return ResponseEntity.ok(Map.of("message", "Resume deleted successfully"));
 
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<byte[]> downloadResume(
+            @PathVariable String id,
+            Authentication authentication
+    ) {
+
+        Resume resume = resumeService.getResumeById(id, authentication.getPrincipal());
+
+        byte[] pdfBytes = pdfService.generateResumePdf(resume);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=resume.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes);
     }
 }
