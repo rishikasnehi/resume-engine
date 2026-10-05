@@ -4,13 +4,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
-@Configuration 
+@Configuration
 public class GeminiConfig {
 
-    @Bean 
+    @Bean
     public RestClient geminiRestClient() {
         return RestClient.builder()
-                .baseUrl("https://generativelanguage.googleapis.com")
+                .baseUrl("https://generativelanguage.googleapis.com/v1beta")
                 .build();
     }
 }

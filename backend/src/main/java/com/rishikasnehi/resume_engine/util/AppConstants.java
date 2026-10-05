@@ -13,5 +13,5 @@ public class AppConstants {
     public static final String UPLOAD_IMAGES = "/{id}/upload-images";
     public static final String PREMIUM = "premium";
     public static final String AI_BASE_URL = "/api/ai";
-    public static final String REWRITE_BULLET = "/rewrite-bullet";
+    public static final String REWRITE_BULLET = "/rewrite-bullet/{resumeId}";
 }

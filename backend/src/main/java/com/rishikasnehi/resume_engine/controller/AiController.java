@@ -2,6 +2,7 @@ package com.rishikasnehi.resume_engine.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +29,10 @@ public class AiController {
     private final AiService aiService;
 
     @PostMapping(REWRITE_BULLET)
-    public ResponseEntity<?> rewriteBullet(@Valid @RequestBody AiRewriteRequest request, Authentication authentication) {
+    public ResponseEntity<?> rewriteBullet(@PathVariable String resumeId, @Valid @RequestBody AiRewriteRequest request, Authentication authentication) {
 
         // Step 1 : Call the service method
-        AiRewriteResponse response = aiService.rewriteBullet(request);
+        AiRewriteResponse response = aiService.rewriteBullet(resumeId, request);
 
         // Step 2 : Return the response
         return ResponseEntity.ok(response);
