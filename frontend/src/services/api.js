@@ -82,6 +82,17 @@ export const resumeAPI = {
     }),
 }
 
+// ─── AI Endpoints ──────────────────────────────────────────────────────────
+
+export const aiAPI = {
+  /** POST /api/ai/rewrite-bullet/:resumeId — rewrite a resume bullet with AI */
+  rewriteBullet: (resumeId, sectionType, rawText) =>
+    api.post(`/api/ai/rewrite-bullet/${encodeURIComponent(resumeId)}`, {
+      sectionType,
+      rawText,
+    }),
+}
+
 // ─── Template Endpoints ────────────────────────────────────────────────────
 
 export const templateAPI = {

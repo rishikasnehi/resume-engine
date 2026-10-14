@@ -28,7 +28,6 @@ public class Payment {
     private String razorpayOrderId;
     private String razorpayPaymentId;
     private String razorpaySignature;
-
     private Integer amount;
     private String currency;
     private String planType;

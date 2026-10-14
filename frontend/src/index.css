@@ -5,14 +5,14 @@
 @tailwind utilities;
 
 :root {
-  --ink: #0a0a0a;
-  --cream: #f5f0e8;
-  --amber: #c9852a;
-  --amber-light: #e8a84c;
-  --muted: #6b6b6b;
-  --border: #2a2a2a;
-  --surface: #111111;
-  --card: #161616;
+  --ink: #101225;
+  --cream: #f7f5ff;
+  --amber: #ff6b8a;
+  --amber-light: #ff9a76;
+  --muted: #a4a8c5;
+  --border: #343955;
+  --surface: #171a30;
+  --card: #1e223a;
 }
 
 * {
@@ -48,7 +48,7 @@ body {
 
 /* Focus ring */
 *:focus-visible {
-  outline: 1.5px solid var(--amber);
+  outline: 2px solid var(--amber);
   outline-offset: 2px;
 }
 
@@ -88,7 +88,7 @@ body {
 
 /* Shimmer skeleton */
 .skeleton {
-  background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+  background: linear-gradient(90deg, #20243b 25%, #303553 50%, #20243b 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
   border-radius: 4px;
@@ -105,7 +105,7 @@ body {
 
 .input-field:focus {
   border-color: var(--amber);
-  box-shadow: 0 0 0 3px rgba(201, 133, 42, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 107, 138, 0.16);
   outline: none;
 }
 

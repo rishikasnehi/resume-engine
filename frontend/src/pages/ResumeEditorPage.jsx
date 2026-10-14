@@ -352,6 +352,7 @@ export default function ResumeEditorPage() {
           {activeSection === 'work' && (
             <WorkSection
               resume={resume}
+              resumeId={id}
               onChange={updateResume}
             />
           )}
@@ -373,6 +374,7 @@ export default function ResumeEditorPage() {
           {activeSection === 'projects' && (
             <ProjectsSection
               resume={resume}
+              resumeId={id}
               onChange={updateResume}
             />
           )}

@@ -1,43 +1,118 @@
+import { useState } from 'react'
+import toast from 'react-hot-toast'
 import SectionCard from '../SectionCard'
 import Input from '../../common/Input'
 import Button from '../../common/Button'
+import { aiAPI } from '../../../services/api'
 
 const empty = () => ({ title: '', description: '', githubLink: '', liveLink: '' })
 
-export default function ProjectsSection({ resume, onChange }) {
+export default function ProjectsSection({ resume, resumeId, onChange }) {
   const list = resume?.projects || []
+  const [rewritingIndex, setRewritingIndex] = useState(null)
+  const [suggestions, setSuggestions] = useState({})
 
   const update = (i, field, value) => {
     const updated = list.map((item, idx) => idx === i ? { ...item, [field]: value } : item)
     onChange({ projects: updated })
   }
 
+  const rewrite = async (i) => {
+    const rawText = list[i]?.description?.trim()
+    if (!rawText) {
+      toast.error('Add a project description before rewriting it.')
+      return
+    }
+    if (!resumeId) {
+      toast.error('Resume ID is missing. Reopen this resume and try again.')
+      return
+    }
+
+    setRewritingIndex(i)
+    try {
+      const response = await aiAPI.rewriteBullet(resumeId, 'PROJECT', rawText)
+      const data = response.data
+      const rewrittenText = data?.rewrittenText ?? data?.rewrittenBullet ?? data?.text
+      if (typeof rewrittenText !== 'string' || !rewrittenText.trim()) {
+        throw new Error('The AI endpoint did not return rewritten text.')
+      }
+      setSuggestions((prev) => ({ ...prev, [i]: rewrittenText.trim() }))
+      toast.success('AI suggestion is ready. Review it below.')
+    } catch (error) {
+      console.error('Rewrite project description failed:', error.response?.data || error)
+      toast.error(error.response?.data?.message || error.message || 'Could not rewrite this description.')
+    } finally {
+      setRewritingIndex(null)
+    }
+  }
+
+  const acceptSuggestion = (i) => {
+    update(i, 'description', suggestions[i])
+    setSuggestions((prev) => {
+      const next = { ...prev }
+      delete next[i]
+      return next
+    })
+    toast.success('Suggestion applied. Save your resume to keep the change.')
+  }
+
   const add = () => onChange({ projects: [...list, empty()] })
-  const remove = (i) => onChange({ projects: list.filter((_, idx) => idx !== i) })
+  const remove = (i) => {
+    onChange({ projects: list.filter((_, idx) => idx !== i) })
+    setSuggestions((prev) => {
+      const next = { ...prev }
+      delete next[i]
+      return next
+    })
+  }
 
   return (
-    <SectionCard title="Projects" description="Showcase your best work.">
+    <SectionCard title="Projects" description="Showcase your best work. Use AI to make project descriptions clearer and more achievement-focused.">
       <div className="space-y-5">
         {list.map((item, i) => (
-          <div key={i} className="border border-border rounded-sm p-4 relative">
-            <button onClick={() => remove(i)} className="absolute top-3 right-3 text-muted hover:text-red-400 text-xs transition-colors">
+          <div key={i} className="border border-border rounded-xl p-4 sm:p-5 relative bg-card/70">
+            <button type="button" onClick={() => remove(i)} className="absolute top-3 right-3 text-muted hover:text-red-400 text-xs transition-colors">
               Remove
             </button>
             <div className="space-y-3">
-              <Input label="Project Title" value={item.title} onChange={(e) => update(i, 'title', e.target.value)} placeholder="My Awesome App" />
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-medium text-muted tracking-wider uppercase">Description</label>
+              <div className="pr-14">
+                <Input label="Project Title" value={item.title || ''} onChange={(e) => update(i, 'title', e.target.value)} placeholder="My Awesome App" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-semibold text-muted tracking-wider uppercase">Description / Bullet</label>
                 <textarea
-                  value={item.description}
+                  value={item.description || ''}
                   onChange={(e) => update(i, 'description', e.target.value)}
-                  placeholder="What does this project do? What tech did you use?"
-                  rows={2}
-                  className="input-field w-full px-3.5 py-2.5 text-sm rounded-sm resize-none"
+                  placeholder="What does this project do? What technologies did you use?"
+                  rows={3}
+                  className="input-field w-full px-3.5 py-2.5 text-sm rounded-lg resize-y"
                 />
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="text-xs text-muted">Review AI suggestions before applying them.</p>
+                  <Button type="button" onClick={() => rewrite(i)} loading={rewritingIndex === i} disabled={rewritingIndex !== null} className="!bg-gradient-to-r !from-violet-600 !to-fuchsia-500 hover:!from-violet-500 hover:!to-fuchsia-400">
+                    ✨ Rewrite with AI
+                  </Button>
+                </div>
+                {suggestions[i] && (
+                  <div className="rounded-xl border border-violet-400/40 bg-violet-500/10 p-4 space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-violet-200">
+                      <span>✨</span> AI suggestion
+                    </div>
+                    <p className="text-sm text-cream whitespace-pre-wrap">{suggestions[i]}</p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" onClick={() => acceptSuggestion(i)}>Use this version</Button>
+                      <Button type="button" variant="secondary" onClick={() => setSuggestions((prev) => {
+                        const next = { ...prev }
+                        delete next[i]
+                        return next
+                      })}>Discard</Button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Input label="GitHub Link" value={item.githubLink} onChange={(e) => update(i, 'githubLink', e.target.value)} placeholder="github.com/user/repo" />
-                <Input label="Live Link" value={item.liveLink} onChange={(e) => update(i, 'liveLink', e.target.value)} placeholder="myapp.vercel.app" />
+                <Input label="GitHub Link" value={item.githubLink || ''} onChange={(e) => update(i, 'githubLink', e.target.value)} placeholder="github.com/user/repo" />
+                <Input label="Live Link" value={item.liveLink || ''} onChange={(e) => update(i, 'liveLink', e.target.value)} placeholder="myapp.vercel.app" />
               </div>
             </div>
           </div>
