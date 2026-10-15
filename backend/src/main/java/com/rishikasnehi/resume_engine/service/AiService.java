@@ -97,9 +97,7 @@ public class AiService {
         // Step 6: Check whether section exists
         // --------------------------------------------------
 
-        validateSectionExists(
-                normalizedSectionType
-        );
+        validateSectionType(normalizedSectionType);
 
         // --------------------------------------------------
         // Step 7: Build prompt
