@@ -28,8 +28,8 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final Jwtutil jwtutil;
 
-    @Value("${app.base.url:http://localhost:8080}")
-    private String appBaseUrl;
+    @Value("${app.frontend.url:https://resume-engine-teal.vercel.app}")
+    private String frontendUrl;
 
     public RegisterResponse register(RegisterRequest request) {
         log.info("Inside AuthService: register()");
@@ -76,7 +76,7 @@ public class AuthService {
         log.info("Inside AuthService: sendVerificationEmail() for user {}", user);
         String subject = "Verify your email";
         try {
-            String link = appBaseUrl + "/api/auth/verify-email?token=" + user.getVerificationToken();
+            String link = frontendUrl + "/verify-email?token=" + user.getVerificationToken();
             String htmlContent = "<div style='font-family: sans-serif'>" +
                             "<h2>Verify your email</h2>" +
                             "<p>Hi " + user.getName() + ", please confirm your email to activate your account </p>" +
