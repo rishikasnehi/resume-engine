@@ -71,6 +71,12 @@ export const resumeAPI = {
   /** GET /api/resumes/:id — get a specific resume by ID */
   getById: (id) => api.get(`/api/resumes/${id}`),
 
+  /** GET /api/resumes/:id/download — download resume as PDF */
+  downloadPdf: (id) =>
+  api.get(`/api/resumes/${id}/download`, {
+    responseType: 'blob',
+  }),
+
   /** PUT /api/resumes/:id — update a resume */
   update: (id, data) => api.put(`/api/resumes/${id}`, data),
 
