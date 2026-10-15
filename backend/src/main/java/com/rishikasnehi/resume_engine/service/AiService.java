@@ -263,19 +263,19 @@ public class AiService {
 
             return extractText(responseBody);
 
-        } catch (AiServiceException ex) {
+        } } catch (Exception ex) {
 
-            // Already a clean user-facing error
-            throw ex;
+                log.error(
+                        "Gemini API call failed. Type: {}, Message: {}",
+                        ex.getClass().getName(),
+                        ex.getMessage(),
+                        ex
+                );
 
-        } catch (Exception ex) {
-
-            log.error("Gemini API call failed", ex);
-
-            throw new AiServiceException(
-                    "AI rewrite failed. Please try again in a moment.",
-                    ex
-            );
+                throw new AiServiceException(
+                        "AI rewrite failed. Please try again in a moment.",
+                        ex
+                );
         }
     }
 
