@@ -263,7 +263,7 @@ public class AiService {
 
             return extractText(responseBody);
 
-        } } catch (Exception ex) {
+        }  catch (Exception ex) {
 
                 log.error(
                         "Gemini API call failed. Type: {}, Message: {}",
