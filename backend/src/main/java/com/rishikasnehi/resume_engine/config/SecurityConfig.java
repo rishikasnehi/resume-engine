@@ -51,31 +51,30 @@ public class SecurityConfig {
         return http.build();
     }
 
-    ```java
-@Bean
-public CorsConfigurationSource corsConfigurationSource() {
-    CorsConfiguration configuration = new CorsConfiguration();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    String frontendUrl = System.getenv("FRONTEND_URL");
+        String frontendUrl = System.getenv("FRONTEND_URL");
 
-    configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:5173",
-        "https://resume-engine-teal.vercel.app"
-    ));
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:5173",
+            "https://resume-engine-teal.vercel.app"
+        ));
 
-    configuration.setAllowedMethods(Arrays.asList(
-        "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
-    ));
+        configuration.setAllowedMethods(Arrays.asList(
+            "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+        ));
 
-    configuration.setAllowedHeaders(Arrays.asList("*"));
-    configuration.setAllowCredentials(true);
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
 
-    UrlBasedCorsConfigurationSource source =
-        new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =
+            new UrlBasedCorsConfigurationSource();
 
-    source.registerCorsConfiguration("/**", configuration);
+        source.registerCorsConfiguration("/**", configuration);
 
-    return source;
-}
-```
+        return source;
+    }
+
 }
