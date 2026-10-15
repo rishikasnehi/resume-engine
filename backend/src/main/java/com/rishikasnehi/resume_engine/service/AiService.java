@@ -98,7 +98,6 @@ public class AiService {
         // --------------------------------------------------
 
         validateSectionExists(
-                resume,
                 normalizedSectionType
         );
 
@@ -143,56 +142,28 @@ public class AiService {
     // Validate section exists in the resume
     // ======================================================
 
-    private void validateSectionExists(
-            Resume resume,
-            String sectionType) {
-
-        boolean exists = switch (sectionType) {
-
-            case "PROFILE", "PROFILE_INFO" ->
-                    resume.getProfileInfo() != null;
-
-            case "CONTACT", "CONTACT_INFO" ->
-                    resume.getContactInfo() != null;
-
-            case "WORK_EXPERIENCE", "WORKEXPERIENCE" ->
-                    resume.getWorkExperience() != null
-                    && !resume.getWorkExperience().isEmpty();
-
-            case "EDUCATION" ->
-                    resume.getEducation() != null
-                    && !resume.getEducation().isEmpty();
-
-            case "SKILL", "SKILLS" ->
-                    resume.getSkills() != null
-                    && !resume.getSkills().isEmpty();
-
-            case "PROJECT", "PROJECTS" ->
-                    resume.getProjects() != null
-                    && !resume.getProjects().isEmpty();
-
-            case "CERTIFICATION", "CERTIFICATIONS" ->
-                    resume.getCertifications() != null
-                    && !resume.getCertifications().isEmpty();
-
-            case "LANGUAGE", "LANGUAGES" ->
-                    resume.getLanguages() != null
-                    && !resume.getLanguages().isEmpty();
-
-            case "INTEREST", "INTERESTS" ->
-                    resume.getInterests() != null
-                    && !resume.getInterests().isEmpty();
-
-            default ->
-                    false;
+    
+        private void validateSectionType(String sectionType) {
+        boolean valid = switch (sectionType) {
+                case "PROFILE", "PROFILE_INFO",
+                "CONTACT", "CONTACT_INFO",
+                "WORK_EXPERIENCE", "WORKEXPERIENCE",
+                "EDUCATION",
+                "SKILL", "SKILLS",
+                "PROJECT", "PROJECTS",
+                "CERTIFICATION", "CERTIFICATIONS",
+                "LANGUAGE", "LANGUAGES",
+                "INTEREST", "INTERESTS" -> true;
+                default -> false;
         };
 
-        if (!exists) {
-            throw new AiServiceException(
-                    "Invalid section type: " + sectionType
-            );
+        if (!valid) {
+                throw new AiServiceException(
+                "Unsupported section type: " + sectionType
+                );
         }
-    }
+        }
+
 
     // ======================================================
     // Build Gemini Prompt
